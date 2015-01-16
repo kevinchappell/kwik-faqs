@@ -9,7 +9,7 @@ class KwikFAQs {
 
     add_action('init', array( $this, 'faqs_create_post_type' ) );
     add_filter('archive_template', array( $this, 'archive_template' ));
-    add_filter('single_template', array( $this, 'single_template' ));
+    add_filter('single_template', array( $this, 'single_tepmlate' ));
 
     if ( is_admin() ){
       $this->admin();
@@ -29,7 +29,7 @@ class KwikFAQs {
   }
 
   public function admin() {
-    if ( !$this->admin ) {
+    if ( !isset($this->admin) ) {
       require_once __DIR__ . '/class.kwik-faqs-admin.php';
       $this->admin = new KwikFAQs_Admin( $this );
     }

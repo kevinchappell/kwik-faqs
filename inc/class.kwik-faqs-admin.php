@@ -19,7 +19,7 @@ class KwikFAQs_Admin{
     add_action( 'switch_theme', array( $this, '__destruct' ) );
   }
 
-  private function add_faqs_script($hook) {
+  public function add_faqs_script($hook) {
     $screen = get_current_screen();
 
     $post_types_array = array(

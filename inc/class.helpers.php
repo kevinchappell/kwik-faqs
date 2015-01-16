@@ -23,7 +23,7 @@ class K_FAQS_HELPERS extends KwikFAQs{
     return array_slice($array, 0, $offset, TRUE) + $values + array_slice($array, $offset, NULL, TRUE);
   }
 
-  public function k_faq_logo_text_filter( $translated_text, $untranslated_text, $domain ) {
+  public static function k_faq_logo_text_filter( $translated_text, $untranslated_text, $domain ) {
     global $post, $typenow, $current_screen;
 
     if( is_admin() && 'faqs' === $typenow )  {
