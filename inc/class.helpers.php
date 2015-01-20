@@ -2,7 +2,6 @@
 
 class K_FAQS_HELPERS extends KwikFAQs
 {
-
     public function __construct()
     {
         $this->name = "K_FAQS_HELPERS";
@@ -10,7 +9,6 @@ class K_FAQS_HELPERS extends KwikFAQs
 
     public function array_insert_at_position($array, $values, $pivot, $position = 'after')
     {
-
         $offset = 0;
         foreach ($array as $key => $value) {
             ++$offset;
@@ -24,6 +22,11 @@ class K_FAQS_HELPERS extends KwikFAQs
         }
 
         return array_slice($array, 0, $offset, true) + $values + array_slice($array, $offset, null, true);
+    }
+
+    public static function faqs_at_a_glance()
+    {
+        Kwikutils::cpt_at_a_glance('faqs');
     }
 
     public static function k_faq_logo_text_filter($translated_text, $untranslated_text, $domain)
@@ -60,10 +63,4 @@ class K_FAQS_HELPERS extends KwikFAQs
         }
         return $translated_text;
     }
-
-    public static function faqs_at_a_glance()
-    {
-        Kwikutils::cpt_at_a_glance('faqs');
-    }
-
 }
