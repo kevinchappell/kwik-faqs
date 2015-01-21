@@ -1,56 +1,14 @@
 
+.post-type-archive-faqs .type-faq header{
+  padding:10px;
+  background:#dfdfdf;
+}
+.post-type-archive-faqs .type-faq header:hover{
+  background:#efefef;
+}
 
 /*
 =========================
   WIDGETS
 =========================
 */
-
-.cpt_faqs_widget {
-  width:100%;
-}
-.cpt_faqs_widget .faq {
-  float: left;
-  margin-right: 2%;
-  text-align: center;
-  height: 76px;
-  vertical-align: middle;
-}
-.cpt_faqs_widget .faq span {
-  display: inline-block;
-  vertical-align: middle;
-}
-.cpt_faqs_widget .faq.faq-89 img {
-  margin-top: 12px;
-}
-.cpt_faqs_widget .faq.faq-234 img {
-  width:100px;
-}
-.cpt_faqs_widget .faq:before {
-  content: '';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-}
-.cpt_faqs_widget .faq:last-child, .cpt_faqs_widget .faq.nth-faq {
-  margin-right: 0;
-}
-.cpt_faqs_widget .attachment-faq_logo {
-  max-width: 100%;
-  height: auto;
-  display: inline-block;
-  vertical-align: middle;
-}
-.cpt_faqs_widget a {
-  display: inline-block;
-}
-.cpt_faqs_widget .member-level {
-  margin-bottom:20px;
-}
-.cpt_faqs_widget .member-level:last-child{
-  margin-bottom:0;
-}
-.cpt_faqs_widget h3 {
-  font-size: 12px;
-  color: #757575;
-}

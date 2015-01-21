@@ -1,11 +1,26 @@
 <?php
 
+/**
+ * Cor class for Kwik Clients. Creates the custom post type, enqueues
+ * styles and scripts and add filter for template redirect
+ *
+ * @category Core
+ * @package  KwikFAQs
+ * @author   Kevin Chappell <kevin.b.chappell@gmail.com>
+ * @license  http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link     http://kevin-chappell.com/kwik-faqs/docs/inc/class.kwik-faqs.php/
+ * @since    KwikFAQs 1.0
+ */
+
 require_once 'class.helpers.php';
 
 class KwikFAQs
 {
     static $helpers;
 
+    /**
+     * Adds init actions and filters for plugin and deactivation hook
+     */
     public function __construct()
     {
 
@@ -19,31 +34,41 @@ class KwikFAQs
             add_action('wp_enqueue_scripts', array($this, 'scripts_and_styles'));
         }
 
-        // widgets
         self::load_widgets();
 
         // Cleanup on deactivation
         register_deactivation_hook(__FILE__, array($this, '__destruct'));
     }
 
+    /**
+     * Currently unused, placeholder for garbage cleanup code.
+     */
     public function __destruct()
     {
         // Do garbage cleanup stuff here
     }
 
+    /**
+     * Method for adding instance of admin to main class
+     * @return Class KwikFAQs Admin
+     */
     public function admin()
     {
         if (!isset($this->admin)) {
-            require_once __DIR__ . '/class.kwik-faqs-admin.php';
+            include_once __DIR__ . '/class.kwik-faqs-admin.php';
             $this->admin = new KwikFAQs_Admin($this);
         }
         return $this->admin;
     }
 
+    /**
+     * Enqueue scripts and styles for the front-end
+     * @return Dynamic Styles and scripts added to the head
+     */
     public function scripts_and_styles()
     {
-        wp_enqueue_script('jquery-cycle', 'http://malsup.github.io/min/jquery.cycle2.min.js', array('jquery'));
-        wp_enqueue_style('kwik-faqs-css', K_FAQS_URL . '/css/' . K_FAQS_BASENAME . '.css', false, '2014-12-31');
+        wp_enqueue_script('kwik-faqs-js', K_FAQS_URL . '/js/' . K_FAQS_BASENAME . '.js', array('jquery'));
+        wp_enqueue_style('kwik-faqs-css', K_FAQS_URL . '/css/' . K_FAQS_BASENAME . '.css', false, '2015-01-20');
     }
 
     public function faqs_create_post_type()
@@ -52,7 +77,8 @@ class KwikFAQs
         self::create_faqs_taxonomies();
         // new K_FAQS_META();
 
-        register_post_type(K_FAQS_CPT,
+        register_post_type(
+            K_FAQS_CPT,
             array(
                 'labels' => array(
                     'name' => __('FAQs', 'kwik'),
@@ -95,14 +121,16 @@ class KwikFAQs
             'new_item_name' => __('New Topic'),
         );
 
-        register_taxonomy('faq_topics', array(K_FAQS_CPT), array(
-            'hierarchical' => false,
-            'labels' => $faq_topics_labels,
-            'show_ui' => true,
-            'query_var' => true,
-            'show_admin_column' => true,
-            'rewrite' => array('slug' => 'faq-topic'),
-        ));
+        register_taxonomy('faq_topics', array(K_FAQS_CPT),
+            array(
+                'hierarchical' => false,
+                'labels' => $faq_topics_labels,
+                'show_ui' => true,
+                'query_var' => true,
+                'show_admin_column' => true,
+                'rewrite' => array('slug' => 'faq-topic'),
+              )
+        );
 
     }
 
@@ -112,8 +140,8 @@ class KwikFAQs
 
         /* Checks for single template by post type */
         if ($post->post_type === K_FAQS_CPT) {
-            if (file_exists(K_FAQS_PATH . '/template/' . K_FAQS_CPT . '-archive.php')) {
-                return K_FAQS_PATH . '/template/' . K_FAQS_CPT . '-archive.php';
+            if (file_exists(K_FAQS_PATH . '/template/archive-' . K_FAQS_CPT . '.php')) {
+                return K_FAQS_PATH . '/template/archive-' . K_FAQS_CPT . '.php';
             }
 
         }
@@ -126,8 +154,8 @@ class KwikFAQs
 
         /* Checks for single template by post type */
         if ($post->post_type === K_FAQS_CPT) {
-            if (file_exists(K_FAQS_PATH . '/template/' . K_FAQS_CPT . '-single.php')) {
-                return K_FAQS_PATH . '/template/' . K_FAQS_CPT . '-single.php';
+            if (file_exists(K_FAQS_PATH . '/template/single-' . K_FAQS_CPT . '.php')) {
+                return K_FAQS_PATH . '/template/single-' . K_FAQS_CPT . '.php';
             }
 
         }

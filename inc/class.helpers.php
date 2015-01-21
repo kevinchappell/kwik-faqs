@@ -26,7 +26,7 @@ class K_FAQS_HELPERS extends KwikFAQs
 
     public static function faqs_at_a_glance()
     {
-        Kwikutils::cpt_at_a_glance('faqs');
+        KwikUtils::cpt_at_a_glance('faqs');
     }
 
     public static function k_faq_logo_text_filter($translated_text, $untranslated_text, $domain)
@@ -36,29 +36,29 @@ class K_FAQS_HELPERS extends KwikFAQs
         if (is_admin() && 'faqs' === $typenow) {
             switch ($untranslated_text) {
 
-                case 'Insert into post':
-                    $translated_text = __('Add to FAQ description', 'kwik');
-                    break;
+            case 'Insert into post':
+                $translated_text = __('Add FAQ answer', 'kwik');
+                break;
 
-                case 'Set featured image':
-                    $translated_text = __('Set FAQ logo', 'kwik');
-                    break;
+            // case 'Set featured image':
+            //     $translated_text = __('Set FAQ logo', 'kwik');
+            //     break;
 
-                case 'Set Featured Image':
-                    $translated_text = __('Set FAQ Logo', 'kwik');
-                    break;
+            // case 'Set Featured Image':
+            //     $translated_text = __('Set FAQ Logo', 'kwik');
+            //     break;
 
-                case 'Featured Image':
-                    $translated_text = __('FAQ Logo', 'kwik');
-                    break;
+            // case 'Featured Image':
+            //     $translated_text = __('FAQ Logo', 'kwik');
+            //     break;
 
-                case 'Enter title here':
-                    $translated_text = __('Enter Question', 'kwik');
-                    break;
+            case 'Enter title here':
+                $translated_text = __('Enter Question', 'kwik');
+                break;
 
-                case 'Title':
-                    $translated_text = __('Question', 'kwik');
-                    break;
+            case 'Title':
+                $translated_text = __('Question', 'kwik');
+                break;
             }
         }
         return $translated_text;
