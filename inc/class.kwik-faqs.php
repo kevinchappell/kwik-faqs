@@ -26,7 +26,7 @@ class KwikFAQs
 
         add_action('init', array($this, 'faqs_create_post_type'));
         add_filter('archive_template', array($this, 'archive_template'));
-        add_filter('single_template', array($this, 'single_tepmlate'));
+        add_filter('single_template', array($this, 'single_template'));
 
         if (is_admin()) {
             $this->admin();

@@ -145,8 +145,8 @@ class FAQs_Widget extends WP_Widget
             $output .= $inputs->cb($this->get_field_name('levels') . '[' . $term->slug . ']', $term->slug, $term->name . ': ', $cbAttrs);
         }
 
-        $output .= $inputs->select($this->get_field_name('orderby'), $instance['orderby'], __('Order By: ', 'kwik'), null, $inputs->order_by());
-        $output .= $inputs->select($this->get_field_name('order'), $instance['order'], __('Order: ', 'kwik'), null, $inputs->order());
+        $output .= $inputs->select($this->get_field_name('orderby'), $instance['orderby'], __('Order By: ', 'kwik'), null, KwikHelpers::order_by());
+        $output .= $inputs->select($this->get_field_name('order'), $instance['order'], __('Order: ', 'kwik'), null, KwikHelpers::order());
         $output .= $inputs->spinner($this->get_field_name('faqs_per_row'), $instance['faqs_per_row'], __('FAQs per Row: ', 'kwik'), array('min' => '1', 'max' => '6'));
         $output .= $inputs->cb($this->get_field_name('show_thumbs'), true, __('Show thumbnails: ', 'kwik'), array('checked' => $instance['show_thumbs'] ? true : false));
 
