@@ -4,7 +4,7 @@ Plugin Name: Kwik FAQs
 Plugin URI: http://kevin-chappell.com/kwik-faqs
 Description: Easily add an interactive FAQs page to your website.
 Author: Kevin Chappell
-Version: .1.1
+Version: .3
 Author URI: http://kevin-chappell.com
  */
 
