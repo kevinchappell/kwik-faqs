@@ -9,7 +9,7 @@ class KwikFAQs_Admin
         add_action('admin_enqueue_scripts', array($this, 'add_faqs_script'));
         add_filter('manage_faqs_posts_columns', array($this, 'set_faqs_columns'));
         add_action('wp_ajax_faqs_update_post_order', array($this, 'faqs_update_post_order'));
-        add_action('save_post', array($this, 'save_faqs_meta'), 1, 2);
+        add_action('save_post_faqs', array($this, 'save_faqs_meta'), 1, 2);
         add_action('admin_menu', array($this, 'register_faqs_menu'));
         add_shortcode('membership_table', array($this, 'membership_table'));
 
@@ -132,10 +132,6 @@ class KwikFAQs_Admin
 
         if ($post->post_status == 'auto-draft') {
             return;
-        }
-
-        if ($post->post_type != 'faqs') {
-            return $post->ID;
         }
 
         // make sure there is no conflict with other post save function and verify the noncename
