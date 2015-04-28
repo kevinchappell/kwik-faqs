@@ -43,7 +43,7 @@ class FAQs_Widget extends WP_Widget
         $control_ops = array('width' => 150, 'height' => 350, 'id_base' => 'cpt-faqs-widget');
 
         /* Create the widget. */
-        $this->WP_Widget('cpt-faqs-widget', esc_html__('Kwik FAQs Logos', 'kwik'), $widget_ops, $control_ops);
+        $this->WP_Widget('cpt-faqs-widget', esc_html__('Kwik FAQs', 'kwik'), $widget_ops, $control_ops);
     }
 
     public function add_style($cpr)
