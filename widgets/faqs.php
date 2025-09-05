@@ -2,48 +2,56 @@
 /**
  * Widget Name: Kwik FAQs
  * Description: list the most frequently asked questions
- * Version: 0.3
+ * Version: 1.0.0
  * Author: kevinchappell
  *
+ * @package KwikFAQs
  */
 
-/**
- * Add function to widgets_init that'll load our widget.
- * @since 0.1
- */
-add_action('widgets_init', 'cpt_faqs_widget');
-
-/**
- * Register our widget.
- * 'FAQs_Widget' is the widget class used below.
- *
- * @since 0.1
- */
-function cpt_faqs_widget()
-{
-    register_widget('FAQs_Widget');
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
 
 /**
+ * Register our widget on widgets_init
  *
- * @since 0.1
+ * @since 1.0.0
  */
-class FAQs_Widget extends WP_Widget
-{
+add_action( 'widgets_init', 'kwik_faqs_register_widget' );
 
+/**
+ * Register widget function
+ */
+function kwik_faqs_register_widget(): void {
+    register_widget( 'Kwik_FAQs_Widget' );
+}
+
+/**
+ * FAQs Widget Class
+ *
+ * @since 1.0.0
+ */
+class Kwik_FAQs_Widget extends WP_Widget
+{
     /**
      * Widget setup.
+     *
+     * @since 1.0.0
      */
-    public function FAQs_Widget()
+    public function __construct()
     {
-        /* Widget settings. */
-        $widget_ops = array('classname' => 'cpt_faqs_widget', 'description' => esc_html__('List all your faqs', 'kwik'));
+        $widget_ops = array(
+            'classname'   => 'kwik_faqs_widget',
+            'description' => esc_html__( 'Display your FAQs with customizable options', 'kwik' ),
+        );
 
-        /* Widget control settings. */
-        $control_ops = array('width' => 150, 'height' => 350, 'id_base' => 'cpt-faqs-widget');
+        $control_ops = array(
+            'width'  => 400,
+            'height' => 350,
+            'id_base' => 'kwik-faqs-widget',
+        );
 
-        /* Create the widget. */
-        $this->WP_Widget('cpt-faqs-widget', esc_html__('Kwik FAQs', 'kwik'), $widget_ops, $control_ops);
+        parent::__construct( 'kwik-faqs-widget', esc_html__( 'Kwik FAQs', 'kwik' ), $widget_ops, $control_ops );
     }
 
     public function add_style($cpr)

@@ -1,22 +1,27 @@
 <?php
-/*
-Plugin Name: Kwik FAQs
-Plugin URI: http://kevin-chappell.com/kwik-faqs
-Description: Easily add an interactive FAQs page to your website.
-Author: Kevin Chappell
-Version: .3
-Author URI: http://kevin-chappell.com
+/**
+ * Plugin Name: Kwik FAQs
+ * Description: A simple FAQs plugin for WordPress
+ * Author: Kevin Chappell
+ * Version: 1.0.0
+ * Text Domain: kwik-faqs
  */
 
+// Prevent direct access
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
-define('K_FAQS_BASENAME', basename(dirname( __FILE__ )));
-define('K_FAQS_SETTINGS', preg_replace('/-/', '_', K_FAQS_BASENAME).'_settings');
-define('K_FAQS_URL', plugins_url('', __FILE__));
-define('K_FAQS_PATH', dirname( __FILE__ ) );
-define('K_FAQS_CPT', 'faqs' );
+// Define constants with improved naming and WordPress standards
+define( 'KWIK_FAQS_VERSION', '1.0.0' );
+define( 'KWIK_FAQS_BASENAME', plugin_basename( __FILE__ ) );
+define( 'KWIK_FAQS_URL', plugin_dir_url( __FILE__ ) );
+define( 'KWIK_FAQS_PATH', plugin_dir_path( __FILE__ ) );
+define( 'KWIK_FAQS_CPT', 'faqs' );
+define( 'KWIK_FAQS_SETTINGS', 'kwik_faqs_settings' );
 
+// Load the core plugin class
+require_once plugin_dir_path( __FILE__ ) . 'inc/class.kwik-faqs.php';
 
-// Load the core.
-require_once __DIR__ . '/inc/class.kwik-faqs.php';
-
-kwik_faqs();
+// Initialize the plugin
+kwik_faqs_init();

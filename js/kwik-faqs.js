@@ -1,11 +1,15 @@
 jQuery(document).ready(function($) {
 
-	$('.faqs h2 a').on('click', function(e) {
+	$('.faq-toggle').on('click', function(e) {
 		e.preventDefault();
-		var answer = $(this).parents('.faqs:eq(0)').find('.entry-content');
-		answer.slideToggle(333, function(){
+		var $this = $(this);
+		var $answer = $this.closest('.faq-item').find('.faq-answer');
 
-		});
+		// Close other answers
+		$('.faq-answer').not($answer).slideUp(333);
+
+		// Toggle current answer
+		$answer.slideToggle(333);
 	});
 
 });

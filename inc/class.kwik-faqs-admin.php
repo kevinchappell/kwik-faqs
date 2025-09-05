@@ -1,41 +1,96 @@
 <?php
+/**
+ * Admin functionality for Kwik FAQs.
+ *
+ * @package KwikFAQs
+ * @since 1.0.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 class KwikFAQs_Admin
 {
+    /**
+     * Main plugin instance
+     *
+     * @var KwikFAQs
+     */
+    private KwikFAQs $main_instance;
 
-    public function __construct()
+    /**
+     * Constructor
+     *
+     * @param KwikFAQs $main_instance Main plugin instance.
+     */
+    public function __construct( KwikFAQs $main_instance )
     {
+        $this->main_instance = $main_instance;
 
-        add_action('admin_enqueue_scripts', array($this, 'add_faqs_script'));
-        add_filter('manage_faqs_posts_columns', array($this, 'set_faqs_columns'));
-        add_action('wp_ajax_faqs_update_post_order', array($this, 'faqs_update_post_order'));
-        add_action('save_post_faqs', array($this, 'save_faqs_meta'), 1, 2);
-        add_action('admin_menu', array($this, 'register_faqs_menu'));
-        add_shortcode('membership_table', array($this, 'membership_table'));
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+        add_filter( 'manage_' . KWIK_FAQS_CPT . '_posts_columns', array( $this, 'set_faqs_columns' ) );
+        add_action( 'wp_ajax_faqs_update_post_order', array( $this, 'update_post_order' ) );
+        add_action( 'save_post_' . KWIK_FAQS_CPT, array( $this, 'save_faqs_meta' ), 10, 3 );
+        add_action( 'admin_menu', array( $this, 'register_faqs_menu' ) );
 
         // Utils/Helpers
-        add_filter('gettext', array('K_FAQS_HELPERS', 'k_faq_logo_text_filter'), 20, 3);
-        add_action('dashboard_glance_items', array('K_FAQS_HELPERS', 'faqs_at_a_glance'), 'faqs');
+        add_filter( 'gettext', array( 'K_FAQS_HELPERS', 'k_faq_logo_text_filter' ), 20, 3 );
+        add_action( 'dashboard_glance_items', array( 'K_FAQS_HELPERS', 'faqs_at_a_glance' ) );
 
         // Cleanup on deactivation
-        add_action('switch_theme', array($this, '__destruct'));
+        add_action( 'switch_theme', array( $this, 'deactivate' ) );
     }
 
-    public function add_faqs_script($hook)
+    /**
+     * Enqueue admin scripts and styles
+     *
+     * @param string $hook Current page hook.
+     */
+    public function enqueue_admin_scripts( string $hook ): void
     {
         $screen = get_current_screen();
 
+        if ( ! $screen ) {
+            return;
+        }
+
         $post_types_array = array(
-            "faqs",
-            "faqs_page_slide-order",
+            KWIK_FAQS_CPT,
+            KWIK_FAQS_CPT . '_page_faqs-order',
         );
 
         // Check screen hook and current post type
-        if (in_array($screen->post_type, $post_types_array)) {
-            wp_enqueue_script('jquery-ui-autocomplete');
-            wp_enqueue_script('jquery-ui-sortable');
-            wp_enqueue_script('kwik-faqs-admin', K_FAQS_URL . '/js/kwik-faqs-admin.js', array('jquery-ui-autocomplete', 'jquery-ui-sortable', 'jquery'), null, true);
-            wp_enqueue_script('kwik-faqs', K_FAQS_URL . '/js/kwik-faqs.js', array('jquery-ui-autocomplete', 'jquery-ui-sortable', 'jquery'), null, true);
+        if ( in_array( $screen->post_type, $post_types_array, true ) ||
+             ( 'toplevel_page_faqs-order' === $hook ) ) {
+            wp_enqueue_script(
+                'jquery-ui-autocomplete',
+                false,
+                array( 'jquery' ),
+                null,
+                true
+            );
+            wp_enqueue_script(
+                'jquery-ui-sortable',
+                false,
+                array( 'jquery' ),
+                null,
+                true
+            );
+            wp_enqueue_script(
+                'kwik-faqs-admin',
+                KWIK_FAQS_URL . 'js/kwik-faqs-admin.js',
+                array( 'jquery', 'jquery-ui-autocomplete', 'jquery-ui-sortable' ),
+                KWIK_FAQS_VERSION,
+                true
+            );
+            wp_enqueue_script(
+                'kwik-faqs',
+                KWIK_FAQS_URL . 'js/kwik-faqs.js',
+                array( 'jquery', 'jquery-ui-autocomplete', 'jquery-ui-sortable' ),
+                KWIK_FAQS_VERSION,
+                true
+            );
         }
     }
 
@@ -126,41 +181,51 @@ class KwikFAQs_Admin
 
     }
 
-    // Save the Metabox Data
-    public function save_faqs_meta($post_id, $post)
+    /**
+     * Save FAQ meta data
+     *
+     * @param int      $post_id Post ID.
+     * @param WP_Post  $post    Post object.
+     * @param bool     $update  Whether this is an update.
+     */
+    public function save_faqs_meta( int $post_id, WP_Post $post, bool $update ): void
     {
-
-        if ($post->post_status == 'auto-draft') {
+        // Verify user permissions
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
             return;
         }
 
-        // make sure there is no conflict with other post save function and verify the noncename
-        if (!wp_verify_nonce($_POST['faqs_meta_noncename'], plugin_basename(__FILE__))) {
-            return $post->ID;
+        // Skip for revisions and auto-drafts
+        if ( wp_is_post_revision( $post_id ) || 'auto-draft' === $post->post_status ) {
+            return;
         }
 
-        $_POST['_user_info'][3] = (preg_match("#https?://#", $_POST['_user_info'][3]) === 0 && !empty($_POST['_user_info'][3]) ? 'http://' . $_POST['_user_info'][3] : $_POST['_user_info'][3]);
-        $_POST['_user_info'][4] = (preg_match("/\@[a-z0-9_]+/i", $_POST['_user_info'][4]) != 0 ? str_replace('@', '', $_POST['_user_info'][4]) : $_POST['_user_info'][4]);
-
-        // Is the user allowed to edit the post or page?
-        if (!current_user_can('edit_post', $post->ID)) {
-            return $post->ID;
+        // Verify nonce
+        if ( ! isset( $_POST['faqs_meta_noncename'] ) ||
+             ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['faqs_meta_noncename'] ) ), plugin_basename( __FILE__ ) ) ) {
+            return;
         }
 
-        $faqs_meta = array(
-            '_post_link' => $_POST['_post_link'],
-            '_user_info' => $_POST['_user_info'],
-        );
+        // Sanitize and save meta data
+        if ( isset( $_POST['_post_link'] ) ) {
+            update_post_meta( $post_id, '_post_link', sanitize_text_field( wp_unslash( $_POST['_post_link'] ) ) );
+        }
 
-        // Add values of $faqs_meta as custom fields
-        foreach ($faqs_meta as $key => $value) {
-            if ($post->post_type == 'revision') {
-                return;
+        if ( isset( $_POST['_user_info'] ) && is_array( $_POST['_user_info'] ) ) {
+            $user_info = array_map( 'sanitize_text_field', wp_unslash( $_POST['_user_info'] ) );
+
+            // Handle URL validation
+            if ( ! empty( $user_info[3] ) && ! preg_match( '#https?://#', $user_info[3] ) ) {
+                $user_info[3] = 'http://' . $user_info[3];
             }
 
-            __update_post_meta($post->ID, $key, $value);
-        }
+            // Handle Twitter handle
+            if ( ! empty( $user_info[4] ) && preg_match( '/@([a-z0-9_]+)/i', $user_info[4] ) ) {
+                $user_info[4] = str_replace( '@', '', $user_info[4] );
+            }
 
+            update_post_meta( $post_id, '_user_info', $user_info );
+        }
     }
 
     public function register_faqs_menu()

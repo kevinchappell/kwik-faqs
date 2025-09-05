@@ -1,4 +1,56 @@
 
+/* Archive/Accordion Styles */
+.faqs-accordion {
+	margin: 20px 0;
+}
+
+.faq-item {
+	margin-bottom: 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.faq-question {
+	margin: 0;
+	background: #f8f8f8;
+	border-bottom: 1px solid #ddd;
+}
+
+.faq-question:hover {
+	background: #f0f0f0;
+}
+
+.faq-toggle {
+	display: block;
+	padding: 15px 20px;
+	text-decoration: none;
+	color: #333;
+	font-weight: 600;
+	transition: background-color 0.3s ease;
+}
+
+.faq-toggle:hover {
+	color: #000;
+}
+
+.faq-answer {
+	display: none;
+	padding: 20px;
+	background: #fff;
+	border-top: 1px solid #eee;
+}
+
+.faq-answer p {
+	margin: 0 0 10px 0;
+	line-height: 1.6;
+}
+
+.faq-answer p:last-child {
+	margin-bottom: 0;
+}
+
+/* Legacy styles for backward compatibility */
 .post-type-archive-faqs .type-faq header{
   padding:10px;
   background:#dfdfdf;

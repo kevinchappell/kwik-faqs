@@ -19,11 +19,26 @@ get_header(); ?>
         ?>
       </header><!-- .page-header -->
 
+      <div class="faqs-accordion">
       <?php
       while ( have_posts() ) : the_post();
-        get_template_part( 'content', get_post_format() );
+      ?>
+        <div class="faq-item" id="faq-<?php the_ID(); ?>">
+          <h2 class="faq-question">
+            <a href="#faq-<?php the_ID(); ?>" class="faq-toggle">
+              <?php the_title(); ?>
+            </a>
+          </h2>
+          <div class="faq-answer entry-content">
+            <?php the_content(); ?>
+          </div>
+        </div>
+      <?php
       endwhile;
+      ?>
+      </div>
 
+      <?php
       // Previous/next page navigation.
       the_posts_pagination( array(
         'prev_text'          => __( 'Previous page', 'kwik' ),
