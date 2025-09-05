@@ -27,7 +27,7 @@ get_header(); ?>
                 <?php the_title(); ?>
               </a>
             </h2>
-            <div class="faq-answer entry-content">
+            <div class="faq-answer">
               <?php the_content(); ?>
             </div>
           </div>
