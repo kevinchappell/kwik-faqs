@@ -17,13 +17,4 @@ jQuery(document).ready(function($) {
 		});
 	});
 
-	// Initialize FAQs to ensure proper state
-	$('.faq-item').each(function() {
-		var $faqItem = $(this);
-		var $answer = $faqItem.find('.faq-answer');
-
-		// Add transition class for smooth animations
-		$answer.addClass('faq-transition');
-	});
-
 });
