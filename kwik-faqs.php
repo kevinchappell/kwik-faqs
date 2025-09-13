@@ -3,7 +3,7 @@
  * Plugin Name: Kwik FAQs
  * Description: A simple FAQs plugin for WordPress
  * Author: Kevin Chappell
- * Version: 1.0.0
+ * Version: 1.1.0
  * Text Domain: kwik-faqs
  */
 
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants with improved naming and WordPress standards
-define( 'KWIK_FAQS_VERSION', '1.0.0' );
+define( 'KWIK_FAQS_VERSION', '1.1.0' );
 define( 'KWIK_FAQS_BASENAME', plugin_basename( __FILE__ ) );
 define( 'KWIK_FAQS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KWIK_FAQS_PATH', plugin_dir_path( __FILE__ ) );

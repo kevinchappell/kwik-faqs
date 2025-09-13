@@ -12,6 +12,7 @@ Kwik FAQs is a WordPress plugin that allows you to create and manage Frequently 
 - Widget for displaying FAQs
 - REST API support
 - Gutenberg block editor compatible
+- Import FAQs from JSON files
 
 ## Requirements ##
 - WordPress 5.0 or higher
@@ -29,6 +30,7 @@ Kwik FAQs is a WordPress plugin that allows you to create and manage Frequently 
 2. Add FAQ widget to your website
 3. Users submit questions to your site through the FAQ widget
 4. Answer the questions and publish.
+5. To import FAQs from a JSON file, go to FAQs > Import in the WordPress admin and upload your file.
 
 ## Changelog ##
 ### 1.0.0 (2025-01-05) ###
@@ -40,6 +42,7 @@ Kwik FAQs is a WordPress plugin that allows you to create and manage Frequently 
 - Removed deprecated functions and practices
 - Added proper error handling
 - Improved widget functionality
+- Added FAQ import functionality from JSON files
 
 ### 0.3 ###
 - Initial release

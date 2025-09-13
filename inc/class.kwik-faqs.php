@@ -21,7 +21,7 @@ class KwikFAQs
     /**
      * @var KwikFAQs_Admin Admin instance
      */
-    private KwikFAQs_Admin $admin_instance;
+    private ?KwikFAQs_Admin $admin_instance = null;
 
     /**
      * @var K_FAQS_HELPERS Helpers instance
@@ -38,7 +38,7 @@ class KwikFAQs
         add_filter( 'single_template', array( $this, 'single_template' ) );
 
         if ( is_admin() ) {
-            add_action( 'admin_init', array( $this, 'load_admin' ) );
+            $this->load_admin();
         } else {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts_and_styles' ) );
         }
@@ -69,12 +69,28 @@ class KwikFAQs
     }
 
     /**
+     * Initialize admin functionality on admin_init
+     */
+    public function init_admin(): void
+    {
+        if ( is_admin() ) {
+            if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+                error_log('Kwik FAQs: init_admin called, loading admin class');
+            }
+            $this->load_admin();
+        }
+    }
+
+    /**
      * Get admin instance
      *
      * @return KwikFAQs_Admin Admin instance
      */
     public function admin(): KwikFAQs_Admin
     {
+        if (!isset($this->admin_instance)) {
+            $this->load_admin();
+        }
         return $this->admin_instance;
     }
 
@@ -111,10 +127,13 @@ class KwikFAQs
      */
     public function create_post_type(): void
     {
-        $this->create_faqs_taxonomies();
+        if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+            error_log('Kwik FAQs: create_post_type called');
+        }
+        
         // new K_FAQS_META();
 
-        register_post_type(
+        $result = register_post_type(
             KWIK_FAQS_CPT,
             array(
                 'labels' => array(
@@ -128,50 +147,26 @@ class KwikFAQs
                 ),
                 'menu_icon' => 'dashicons-lightbulb',
                 'menu_position' => 4,
-                'supports' => array( 'title', 'editor', 'thumbnail' ),
+                'supports' => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
                 'public' => true,
                 'exclude_from_search' => false,
                 'has_archive' => true,
-                'taxonomies' => array( 'faq_topics' ),
                 'rewrite' => array( 'slug' => KWIK_FAQS_CPT ),
                 'query_var' => true,
                 'show_in_rest' => true, // Add REST API support
             )
         );
+        
+        if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+            if (is_wp_error($result)) {
+                error_log('Kwik FAQs: Post type registration failed: ' . $result->get_error_message());
+            } else {
+                error_log('Kwik FAQs: Post type registration successful');
+            }
+        }
 
         add_image_size( 'faq_logo', 240, 240, false );
         flush_rewrite_rules( false );
-    }
-
-    /**
-     * Create FAQ taxonomies
-     */
-    public function create_faqs_taxonomies(): void
-    {
-        $faq_topics_labels = array(
-            'name' => _x( 'Topic', 'taxonomy general name', 'kwik' ),
-            'singular_name' => _x( 'Topic', 'taxonomy singular name', 'kwik' ),
-            'search_items' => __( 'Search Topics', 'kwik' ),
-            'all_items' => __( 'All Topics', 'kwik' ),
-            'edit_item' => __( 'Edit Topic', 'kwik' ),
-            'update_item' => __( 'Update Topic', 'kwik' ),
-            'add_new_item' => __( 'Add New Topic', 'kwik' ),
-            'new_item_name' => __( 'New Topic', 'kwik' ),
-        );
-
-        register_taxonomy(
-            'faq_topics',
-            array( KWIK_FAQS_CPT ),
-            array(
-                'hierarchical' => false,
-                'labels' => $faq_topics_labels,
-                'show_ui' => true,
-                'query_var' => true,
-                'show_admin_column' => true,
-                'rewrite' => array( 'slug' => 'faq-topic' ),
-                'show_in_rest' => true, // Add REST API support
-            )
-        );
     }
 
     /**

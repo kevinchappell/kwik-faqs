@@ -1,0 +1,14 @@
+[
+  {
+    "question": "What is Kwik FAQs?",
+    "answer": "Kwik FAQs is a simple WordPress plugin that allows you to easily create and manage Frequently Asked Questions on your website."
+  },
+  {
+    "question": "How do I install Kwik FAQs?",
+    "answer": "You can install Kwik FAQs by going to Plugins > Add New in your WordPress admin, searching for \"Kwik FAQs\", and clicking Install Now."
+  },
+  {
+    "question": "Can I import FAQs from a file?",
+    "answer": "Yes! Kwik FAQs now supports importing FAQs from a JSON file. Simply go to FAQs > Import in your WordPress admin and upload your JSON file."
+  }
+]
