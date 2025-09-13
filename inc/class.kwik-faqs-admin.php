@@ -30,7 +30,7 @@ class KwikFAQs_Admin
 
     add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
     add_filter('manage_' . KWIK_FAQS_CPT . '_posts_columns', array($this, 'set_faqs_columns'));
-    add_action('wp_ajax_faqs_update_post_order', array($this, 'update_post_order'));
+    add_action('wp_ajax_faqs_update_post_order', array($this, 'faqs_update_post_order'));
     add_action('admin_menu', array($this, 'register_faqs_menu'), 99);
 
     // Utils/Helpers
@@ -569,7 +569,7 @@ class KwikFAQs_Admin
               <th class="column-excerpt">Excerpt</th>
             </tr>
           </thead>
-          <tbody data-post-type="faqs">
+          <tbody data-post-type="faqs" data-nonce="<?php echo wp_create_nonce('faqs_reorder_nonce'); ?>">
             <?php while ($faqs->have_posts()): 
               $faqs->the_post(); ?>
               <tr id="post-<?php the_ID(); ?>">
@@ -651,23 +651,57 @@ class KwikFAQs_Admin
 
   public function faqs_update_post_order()
   {
-    global $wpdb;
-    $post_type = $_POST['postType'];
+    // Verify nonce for security
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'faqs_reorder_nonce')) {
+      wp_die('Security check failed');
+    }
+
+    // Check user capabilities
+    if (!current_user_can('edit_posts')) {
+      wp_die('Insufficient permissions');
+    }
+
+    // Validate and sanitize POST data
+    if (!isset($_POST['postType']) || !isset($_POST['order']) || !is_array($_POST['order'])) {
+      wp_die('Invalid request data');
+    }
+
+    $post_type = sanitize_text_field($_POST['postType']);
     $order = $_POST['order'];
+
+    // Verify post type is correct
+    if ($post_type !== 'faqs') {
+      wp_die('Invalid post type');
+    }
+
     /**
-     *    Expect: $sorted = array(
-     *                menu_order => post-XX
-     *            );
+     * Expect: $order = array(
+     *     menu_order => post-XX
+     * );
      */
+    $updated_count = 0;
     foreach ($order as $menu_order => $post_id) {
       $post_id = intval(str_ireplace('post-', '', $post_id));
       $menu_order = intval($menu_order);
-      wp_update_post(array(
+      
+      // Verify the post exists and is the correct type
+      $post = get_post($post_id);
+      if (!$post || $post->post_type !== 'faqs') {
+        continue; // Skip invalid posts
+      }
+      
+      // Update the post order
+      $result = wp_update_post(array(
         'ID' => $post_id,
         'menu_order' => $menu_order,
       ));
+      
+      if (!is_wp_error($result)) {
+        $updated_count++;
+      }
     }
-    die('1');
+    
+    wp_die('1'); // Success response
   }
 
 }
