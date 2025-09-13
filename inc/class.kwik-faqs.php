@@ -45,6 +45,9 @@ class KwikFAQs
 
         add_action( 'init', array( $this, 'load_widgets' ) );
 
+        // Load the FAQ filter block
+        $this->load_blocks();
+
         // Cleanup on deactivation
         register_deactivation_hook( KWIK_FAQS_PATH . 'kwik-faqs.php', array( $this, 'deactivate' ) );
     }
@@ -177,9 +180,15 @@ class KwikFAQs
      */
     public function archive_template( string $archive ): string
     {
-        global $post;
-
-        if ( is_a( $post, 'WP_Post' ) && $post->post_type === KWIK_FAQS_CPT ) {
+        // Check if we're on the FAQ archive page
+        if ( is_post_type_archive( KWIK_FAQS_CPT ) ) {
+            // First check if theme has an override
+            $theme_template = locate_template( 'archive-' . KWIK_FAQS_CPT . '.php' );
+            if ( $theme_template ) {
+                return $theme_template;
+            }
+            
+            // Fall back to plugin template
             $template = KWIK_FAQS_PATH . 'template/archive-' . KWIK_FAQS_CPT . '.php';
             if ( file_exists( $template ) ) {
                 return $template;
@@ -218,6 +227,15 @@ class KwikFAQs
                 include_once $file;
             }
         }
+    }
+
+    /**
+     * Load Gutenberg blocks
+     */
+    public function load_blocks(): void
+    {
+        // Load the FAQ filter block
+        require_once KWIK_FAQS_PATH . 'inc/faq-filter-block.php';
     }
 }
 

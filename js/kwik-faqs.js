@@ -1,20 +1,29 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
 
-	// FAQ Toggle functionality
-	$(document).on('click', '.faq-toggle', function(e) {
-		e.preventDefault();
-		var $this = $(this);
-		var $faqItem = $this.closest('.faq-item');
-		var $answer = $faqItem.find('.faq-answer');
+  function initFAQAccordion() {
 
-		// Close other answers (accordion behavior)
-		$('.faq-answer').not($answer).slideUp(300);
+    // FAQ Toggle functionality
+    $(document).on('click', '.faq-toggle', function (e) {
+      e.preventDefault();
+      const $this = $(this);
+      const $faqItem = $this.closest('.faq-item');
+      const $answer = $faqItem.find('.faq-answer');
 
-		// Toggle current answer
-		$answer.slideToggle(300, function() {
-			// Toggle active state on question
-			$faqItem.toggleClass('faq-active', $answer.is(':visible'));
-		});
-	});
+      // Close other answers (accordion behavior)
+      $('.faq-answer').not($answer).slideUp(300, function () {
+        $(this).closest('.faq-item').removeClass('faq-active');
+      });
+
+      // Toggle current answer
+      $answer.slideToggle(300, function () {
+        // Toggle active state on question
+        $faqItem.toggleClass('faq-active', $answer.is(':visible'));
+      });
+    });
+  }
+
+
+  initFAQAccordion();
+
 
 });
