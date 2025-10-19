@@ -269,12 +269,12 @@ class KwikFAQs_Admin
         <h3>Expected JSON Format:</h3>
         <pre style="background: #f1f1f1; padding: 10px; border-radius: 3px; font-size: 12px; max-width: 500px; overflow-x: auto;">[
   {
-    "question": "Where is Top Rope Belts located?",
-    "answer": "Our workshop and headquarters are located in Lexington, North Carolina..."
+    "question": "What are your business hours?",
+    "answer": "We are open Monday through Friday from 9am to 5pm EST..."
   },
   {
-    "question": "Another FAQ question?",
-    "answer": "The answer to the question..."
+    "question": "Do you offer international shipping?",
+    "answer": "Yes, we ship to most countries worldwide..."
   }
 ]</pre>
 

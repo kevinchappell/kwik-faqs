@@ -3,8 +3,12 @@
  * Plugin Name: Kwik FAQs
  * Description: A simple FAQs plugin for WordPress
  * Author: Kevin Chappell
- * Version: 1.1.0
+ * Version: 1.2.0
  * Text Domain: kwik-faqs
+ * Requires at least: 5.0
+ * Requires PHP: 7.4
+ * License: MIT
+ * License URI: https://opensource.org/licenses/MIT
  */
 
 // Prevent direct access
@@ -13,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants with improved naming and WordPress standards
-define( 'KWIK_FAQS_VERSION', '1.1.0' );
+define( 'KWIK_FAQS_VERSION', '1.2.0' );
 define( 'KWIK_FAQS_BASENAME', plugin_basename( __FILE__ ) );
 define( 'KWIK_FAQS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KWIK_FAQS_PATH', plugin_dir_path( __FILE__ ) );
