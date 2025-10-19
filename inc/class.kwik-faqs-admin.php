@@ -32,6 +32,7 @@ class KwikFAQs_Admin
     add_filter('manage_' . KWIK_FAQS_CPT . '_posts_columns', array($this, 'set_faqs_columns'));
     add_action('wp_ajax_faqs_update_post_order', array($this, 'faqs_update_post_order'));
     add_action('admin_menu', array($this, 'register_faqs_menu'), 99);
+    add_action('admin_init', array($this, 'register_settings'));
 
     // Utils/Helpers
     add_filter('gettext', array('K_FAQS_HELPERS', 'k_faq_logo_text_filter'), 20, 3);
@@ -166,6 +167,65 @@ class KwikFAQs_Admin
       'faqs-import',
       array($this, 'faqs_import_page')
     );
+
+    add_submenu_page(
+      'edit.php?post_type=faqs',
+      'FAQ Settings',
+      'Settings',
+      'manage_options',
+      'faqs-settings',
+      array($this, 'faqs_settings_page')
+    );
+  }
+
+  /**
+   * Register settings for the FAQ slug
+   */
+  public function register_settings()
+  {
+    register_setting('kwik_faqs_settings', 'kwik_faqs_slug', array(
+      'type' => 'string',
+      'sanitize_callback' => 'sanitize_text_field',
+      'default' => 'faqs'
+    ));
+  }
+
+  /**
+   * Display the FAQ settings page
+   */
+  public function faqs_settings_page()
+  {
+    if (!current_user_can('manage_options')) {
+      wp_die(__('You do not have sufficient permissions to access this page.'));
+    }
+
+    // Handle form submission
+    if (isset($_POST['submit']) && wp_verify_nonce($_POST['kwik_faqs_settings_nonce'], 'kwik_faqs_settings')) {
+      $new_slug = sanitize_text_field($_POST['kwik_faqs_slug']);
+      update_option('kwik_faqs_slug', $new_slug);
+      flush_rewrite_rules(); // Flush rules after change
+      echo '<div class="notice notice-success"><p>Settings saved and rewrite rules flushed.</p></div>';
+    }
+
+    $current_slug = get_option('kwik_faqs_slug', 'faqs');
+    ?>
+    <div class="wrap">
+      <h1>FAQ Settings</h1>
+      <form method="post" action="">
+        <?php wp_nonce_field('kwik_faqs_settings', 'kwik_faqs_settings_nonce'); ?>
+        <table class="form-table">
+          <tr>
+            <th scope="row"><label for="kwik_faqs_slug">FAQ Archive Slug</label></th>
+            <td>
+              <input type="text" id="kwik_faqs_slug" name="kwik_faqs_slug" value="<?php echo esc_attr($current_slug); ?>" class="regular-text" />
+              <p class="description">Enter the custom slug for FAQ archives (e.g., 'about/faqs'). Leave as 'faqs' for default. After saving, visit <a href="<?php echo admin_url('options-permalink.php'); ?>">Settings > Permalinks</a> if needed.</p>
+            </td>
+          </tr>
+        </table>
+        <?php submit_button(); ?>
+      </form>
+    </div>
+    <?php
   }
 
 

@@ -136,6 +136,8 @@ class KwikFAQs
         
         // new K_FAQS_META();
 
+        $faq_slug = get_option('kwik_faqs_slug', KWIK_FAQS_CPT); // Get configurable slug
+
         $result = register_post_type(
             KWIK_FAQS_CPT,
             array(
@@ -154,7 +156,7 @@ class KwikFAQs
                 'public' => true,
                 'exclude_from_search' => false,
                 'has_archive' => true,
-                'rewrite' => array( 'slug' => KWIK_FAQS_CPT ),
+                'rewrite' => array( 'slug' => $faq_slug ),
                 'query_var' => true,
                 'show_in_rest' => true, // Add REST API support
             )
